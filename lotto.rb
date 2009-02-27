@@ -2,6 +2,11 @@ require 'yaml'
 require 'rubygems'
 require 'httpclient'
 
+def doer(num)
+  res= num % 1000000
+  res == 0 ? (num / 1000000) : num.to_f / 1000000
+end
+
 url = "http://www.calottery.com/default.htm"
 client = HTTPClient.new
 
@@ -27,11 +32,12 @@ if (changed)
   require 'linguistics'
   Linguistics::use( :en )
 
-  str= "The California super lotto drawing for #{current['DrawDate']} has a projected jackpot of about #{current['Jackpot'].en.numwords} dollars.  The cash value is around #{current['CashValue'].en.numwords} dollars."
+  str= "The California super lotto drawing for #{current['DrawDate']} has a projected jackpot of about #{doer(current['Jackpot'].to_i).en.numwords} million dollars.  The cash value is around #{doer(current['CashValue'].to_i).en.numwords} million dollars."
 
   client = Twitter::Client.new(:login => 'casuperlotto', :password => 'coltrane')
-  ##status = client.status(:post, str)
-  puts "will twitter....#{str}"
+  status = client.status(:post, str)
+  puts "#{status}"
+  ##puts "will twitter....#{str}"
 else
   puts "No change, cached values are unmodified"
 end
