@@ -29,11 +29,12 @@ changed=nil
 current.keys.each { |k| changed= current["#{k}"] != cached["#{k}"]; break if changed}
 
 if (changed)
-  ##  something changed.
-  require 'twitter'
-
   ##  Cache the new values.
   File.open("./savedItems.yaml", 'w') { |f| f.puts current.to_yaml }
+end
+
+if (changed)
+  require 'twitter'
 
   ##  stitch together a message and blast it out
   str= "The drawing for #{current['DrawDate']} has a projected jackpot of about $#{millions(current['Jackpot'].to_i)} million.  The cash value is around $#{millions(current['CashValue'].to_i)} million."
