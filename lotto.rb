@@ -25,19 +25,16 @@ changed=0
 current.keys.each { |k| changed= current["#{k}"] != cached["#{k}"]; break if changed}
 
 if (changed)
+  require 'twitter'
+
   File.open("./savedItems.yaml", 'w') { |f| f.puts current.to_yaml }
 
-  require 'twitter'
-  require 'time'
-  require 'linguistics'
-  Linguistics::use( :en )
-
-  str= "The California super lotto drawing for #{current['DrawDate']} has a projected jackpot of about #{doer(current['Jackpot'].to_i).en.numwords} million dollars.  The cash value is around #{doer(current['CashValue'].to_i).en.numwords} million dollars."
+  str= "The California super lotto drawing for #{current['DrawDate']} has a projected jackpot of about $#{doer(current['Jackpot'].to_i)} million.  The cash value is around $#{doer(current['CashValue'].to_i)} million."
 
   client = Twitter::Client.new(:login => 'casuperlotto', :password => 'coltrane')
-  status = client.status(:post, str)
-  puts "#{status}"
-  ##puts "will twitter....#{str}"
+  ##status = client.status(:post, str)
+  ##puts "#{status.inspect}"
+  puts "TWEET: '#{str}'"
 else
   puts "No change, cached values are unmodified"
 end
