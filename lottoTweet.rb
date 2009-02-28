@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
-require 'optparse'
 require 'yaml'
 require 'rubygems'
 require 'httpclient'
+require 'optparse'
 
 def millions(num)
   res= num % 1000000
@@ -24,10 +24,8 @@ ARGV.options do |o|
   o.define_head "Update twitter with current lottery jackpot"
   o.separator   ""
 
-  o.on("-f", "--force",
-       "Force a cache update")          { |OPTIONS[:force]| }
-  o.on("-n", "--noupdate",
-       "Do not update twitter")         { |OPTIONS[:noupdate]| }
+  o.on("-f", "--force",    "Force a cache update")    { |OPTIONS[:force]| }
+  o.on("-n", "--noupdate", "Do not update twitter")   { |OPTIONS[:noupdate]| }
 
   o.separator ""
   o.on_tail("-h", "--help", "Show this help message.") { puts o; exit }
