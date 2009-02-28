@@ -21,7 +21,7 @@ current['DrawDate']= resp.content.gsub(/.*id="HomePageGameJackpots1_lblSLJPTDate
 cached= YAML::load(File.open('./savedItems.yaml'))
 ##puts "cached jackpot= #{cached['Jackpot']}\ncash value= #{cached['CashValue']}\n"
 
-changed=0
+changed=nil
 current.keys.each { |k| changed= current["#{k}"] != cached["#{k}"]; break if changed}
 
 if (changed)
