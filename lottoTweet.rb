@@ -21,7 +21,7 @@ ARGV.options do |o|
 
   o.set_summary_indent('  ')
   o.banner =    "Usage: #{script_name} [-fn]"
-  o.define_head "Update twitter with current lottery jackpot"
+  o.define_head "    Update twitter with current lottery jackpot totals"
   o.separator   ""
 
   o.on("-f", "--force",    "Force a cache update")    { |OPTIONS[:force]| }
