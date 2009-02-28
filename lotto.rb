@@ -32,7 +32,7 @@ if (changed)
   str= "The California super lotto drawing for #{current['DrawDate']} has a projected jackpot of about $#{doer(current['Jackpot'].to_i)} million.  The cash value is around $#{doer(current['CashValue'].to_i)} million."
 
   client = Twitter::Client.new(:login => 'casuperlotto', :password => 'coltrane')
-  ##status = client.status(:post, str)
+  status = client.status(:post, str)
   ##puts "#{status.inspect}"
   puts "TWEET: '#{str}'"
 else
