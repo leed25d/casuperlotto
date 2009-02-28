@@ -9,12 +9,16 @@ def millions(num)
   res == 0 ? (num / 1000000) : num.to_f / 1000000
 end
 
+def logtime
+  mon= Time.now.strftime("%b").upcase
+  Time.now.strftime("%d#{mon}%Y.%H%Mh%Ss")
+end
+
 # default options
 OPTIONS = {
   :force       => false,
   :noupdate    => false,
 }
-
 
 ARGV.options do |o|
   script_name = File.basename($0)
@@ -66,8 +70,8 @@ if (changed || OPTIONS[:force])
     client = Twitter::Client.new(:login => 'casuperlotto', :password => 'coltrane')
     status = client.status(:post, str)
   end
-  puts "TWEET MSG ==>: '#{str}'"
+  puts "#{logtime()} TWEET MSG ==>: '#{str}'"
 else
   ##  log nothing changed
-  puts "No change, cached values are unmodified"
+  puts "#{logtime()} No change, cached values are unmodified"
 end
