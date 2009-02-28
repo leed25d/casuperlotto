@@ -65,7 +65,7 @@ if (changed || OPTIONS[:force])
 
   str= "Amanda says: the next drawing on #{current['DrawDate']} has a projected jackpot of about $#{millions(current['Jackpot'].to_i)} million.  The cash value is around $#{millions(current['CashValue'].to_i)} million."
   if (OPTIONS[:noupdate])
-    puts "--noupdate option was set.  no post to twitter"
+    puts "#{logtime()} --noupdate option was set.  no post to twitter"
   else
     client = Twitter::Client.new(:login => 'casuperlotto', :password => 'coltrane')
     status = client.status(:post, str)
