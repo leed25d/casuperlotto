@@ -55,9 +55,6 @@ cached= YAML::load(File.open('./savedItems.yaml'))
 changed=nil
 current.keys.each { |k| changed= current["#{k}"] != cached["#{k}"]; break if changed}
 
-puts "--force= #{OPTIONS[:force]}"
-puts "--noupdate= #{OPTIONS[:noupdate]}"
-
 if (changed || OPTIONS[:force])
   require 'twitter'
 
