@@ -10,7 +10,7 @@ require 'optparse'
 ##  message is constructde, cache the message itself.  It is          ##
 ##  desirable to do a blog post when the wording of the message       ##
 ##  changes.  Although this can be accoplished with command poions,   ##
-##  I believe that it is cleaner to just cache the message itself.    #
+##  I believe that it is cleaner to just cache the message itself.    ##
 ########################################################################
                                                                       
 def millions(num)
