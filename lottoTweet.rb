@@ -10,9 +10,9 @@ require 'optparse'
 ##  message is constructde, cache the message itself.  It is          ##
 ##  desirable to do a blog post when the wording of the message       ##
 ##  changes.  Although this can be accoplished with command poions,   ##
-##  I believe that it is cleaner to just cache the message itself.    ##
+##  I believe that it is cleaner to just cache the message itself.    #
 ########################################################################
-
+                                                                      
 def millions(num)
   res= num % 1000000
   res == 0 ? (num / 1000000) : num.to_f / 1000000
@@ -55,9 +55,8 @@ resp = client.get(url)
 current={}
 current['Jackpot']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblCurJackpot"[^0-9*]*([0-9,]*).*/m, '\1').gsub(/,/, '')
 current['CashValue']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLPEstCashValue"[^0-9]*([0-9,]*).*/m, '\1').gsub(/,/, '')
-current['DrawDate']= resp.concurrent['Jackpot']= resp.conttent.gsub(/.*id="GameLargeImageBanner1_lblSLCJPTDate"[^0-9]*([0-9\/]*).*/m, '\1').gsub(/,/, '')
+current['DrawDate']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLCJPTDate"[^0-9]*([0-9\/]*).*/m, '\1').gsub(/,/, '')
 ##puts "current jackpot= #{cucurrent['CashValue']= resp.corrent['Jackpot']}\ncash value= #{current['CashValue']}\n"
-                             current['DrawDate']= resp.con
 
 ##  grab the values cached from the last run.  These are the values
 ##  that were last tweeted.
