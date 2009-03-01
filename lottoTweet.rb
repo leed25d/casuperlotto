@@ -4,12 +4,14 @@ require 'rubygems'
 require 'httpclient'
 require 'optparse'
 
-##  TODO: modify the program so that instead of caching the data items
-##  (Jackpot,CashValue,DrawDate) from which the twitter message is
-##  constructde, cache the message itself.  It is desirable to do a
-##  blog post when the wording of the message changes.  Although this
-##  can be accoplished with command poions, I believe that it is
-##  cleaner to just cache the message itself.
+########################################################################
+##  TODO: modify the program so that instead of caching the data      ##
+##  items (Jackpot,CashValue,DrawDate) from which the twitter         ##
+##  message is constructde, cache the message itself.  It is          ##
+##  desirable to do a blog post when the wording of the message       ##
+##  changes.  Although this can be accoplished with command poions,   ##
+##  I believe that it is cleaner to just cache the message itself.    ##
+########################################################################
 
 def millions(num)
   res= num % 1000000
