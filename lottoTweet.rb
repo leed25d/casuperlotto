@@ -4,14 +4,21 @@ require 'rubygems'
 require 'httpclient'
 require 'optparse'
 
+##  TODO: modify the program so that instead of caching the data items
+##  (Jackpot,CashValue,DrawDate) from which the twitter message is
+##  constructde, cache the message itself.  It is desirable to do a
+##  blog post when the wording of the message changes.  Although this
+##  can be accoplished with command poions, I believe that it is
+##  cleaner to just cache the message itself.
+
 def millions(num)
   res= num % 1000000
   res == 0 ? (num / 1000000) : num.to_f / 1000000
 end
 
 def logtime
-  mon= Time.now.strftime("%b").upcase
-  Time.now.strftime("%d#{mon}%Y.%H%Mh%Ss")
+  upcaseMonth= Time.now.strftime("%b").upcase
+  Time.now.strftime("%d#{upcaseMonth}%Y.%H%Mh%Ss")
 end
 
 # default options
@@ -42,12 +49,13 @@ client = HTTPClient.new
 resp = client.get(url)
 
 ##  extract current valuse.  this section is subject to the whims of
-##  the calottery site.  Things will change unpredictably.
+##  the calottery site.  Things here can change unpredictably.
 current={}
 current['Jackpot']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblCurJackpot"[^0-9*]*([0-9,]*).*/m, '\1').gsub(/,/, '')
 current['CashValue']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLPEstCashValue"[^0-9]*([0-9,]*).*/m, '\1').gsub(/,/, '')
-current['DrawDate']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLCJPTDate"[^0-9]*([0-9\/]*).*/m, '\1').gsub(/,/, '')
-##puts "current jackpot= #{current['Jackpot']}\ncash value= #{current['CashValue']}\n"
+current['DrawDate']= resp.concurrent['Jackpot']= resp.conttent.gsub(/.*id="GameLargeImageBanner1_lblSLCJPTDate"[^0-9]*([0-9\/]*).*/m, '\1').gsub(/,/, '')
+##puts "current jackpot= #{cucurrent['CashValue']= resp.corrent['Jackpot']}\ncash value= #{current['CashValue']}\n"
+                             current['DrawDate']= resp.con
 
 ##  grab the values cached from the last run.  These are the values
 ##  that were last tweeted.
