@@ -54,17 +54,26 @@ resp = client.get(url)
 ##  the calottery site.  Things here can change unpredictably.
 current={}
 current['Jackpot']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblCurJackpot"[^0-9*]*([0-9,]*).*/m, '\1').gsub(/,/, '')
+unless  (Integer(current['Jackpot']) rescue false)
+  puts "non integer value for Jackpot: #{current['Jackpot']}"
+  exit
+end
+
 current['CashValue']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLPEstCashValue"[^0-9]*([0-9,]*).*/m, '\1').gsub(/,/, '')
+unless  (Integer(current['CashValue']) rescue false)
+  puts "non integer value for CashValue: #{current['CashValue']}"
+  exit
+end
 current['DrawDate']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLCJPTDate"[^0-9]*([0-9\/]*).*/m, '\1').gsub(/,/, '')
 ##puts "current jackpot= #{cucurrent['CashValue']= resp.corrent['Jackpot']}\ncash value= #{current['CashValue']}\n"
 
 ##  grab the values cached from the last run.  These are the values
 ##  that were last tweeted.
 cached= YAML::load(File.open('./savedItems.yaml'))
-##puts "cached jackpot= #{cached['Jackpot']}\ncash value= #{cached['CashValue']}\n"
 
-changed=nil
-current.keys.each { |k| changed= current["#{k}"] != cached["#{k}"]; break if changed}
+current['Message']= "Amanda says: the next drawing on #{current['DrawDate']} has a projected jackpot of about $#{millions(current['Jackpot'].to_i)} million.  The cash value is around $#{millions(current['CashValue'].to_i)} million."
+changed= (current['Message'] != cached['Message'])
+##puts "current==> #{current.inspect}"
 
 if (changed || OPTIONS[:force])
   require 'twitter'
@@ -72,14 +81,13 @@ if (changed || OPTIONS[:force])
   ##  Cache the new values.
   File.open("./savedItems.yaml", 'w') { |f| f.puts current.to_yaml }
 
-  str= "Amanda says: the next drawing on #{current['DrawDate']} has a projected jackpot of about $#{millions(current['Jackpot'].to_i)} million.  The cash value is around $#{millions(current['CashValue'].to_i)} million."
   if (OPTIONS[:noupdate])
     puts "#{logtime()} --noupdate option was set.  no post to twitter"
   else
     client = Twitter::Client.new(:login => 'casuperlotto', :password => 'coltrane')
-    status = client.status(:post, str)
+    status = client.status(:post, current['Message'])
   end
-  puts "#{logtime()} TWEET MSG ==>: '#{str}'"
+  puts "#{logtime()} TWEET MSG ==>: '#{current['Message']}'"
 else
   ##  log nothing changed
   puts "#{logtime()} No change, cached values are unmodified"
