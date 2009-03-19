@@ -3,15 +3,6 @@ require 'yaml'
 require 'rubygems'
 require 'httpclient'
 require 'optparse'
-
-########################################################################
-##  TODO: modify the program so that instead of caching the data      ##
-##  items (Jackpot,CashValue,DrawDate) from which the twitter         ##
-##  message is constructde, cache the message itself.  It is          ##
-##  desirable to do a blog post when the wording of the message       ##
-##  changes.  Although this can be accoplished with command poions,   ##
-##  I believe that it is cleaner to just cache the message itself.    ##
-########################################################################
                                                                       
 def millions(num)
   res= num % 1000000
@@ -45,7 +36,9 @@ ARGV.options do |o|
   o.parse!
 end
 
-##  grab the front page from the lotto site
+########################################################################
+
+##  grab the superlotto page from the lotto site
 url = "http://californialottery.com/Games/SuperLottoPlus"
 client = HTTPClient.new
 resp = client.get(url)
@@ -55,17 +48,16 @@ resp = client.get(url)
 current={}
 current['Jackpot']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblCurJackpot"[^0-9*]*([0-9,]*).*/m, '\1').gsub(/,/, '')
 unless  (Integer(current['Jackpot']) rescue false)
-  puts "non integer value for Jackpot: #{current['Jackpot']}"
+  puts "#{logtime()} non integer value for Jackpot: #{current['Jackpot']}"
   exit
 end
 
 current['CashValue']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLPEstCashValue"[^0-9]*([0-9,]*).*/m, '\1').gsub(/,/, '')
 unless  (Integer(current['CashValue']) rescue false)
-  puts "non integer value for CashValue: #{current['CashValue']}"
+  puts "#{logtime()} non integer value for CashValue: #{current['CashValue']}"
   exit
 end
 current['DrawDate']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLCJPTDate"[^0-9]*([0-9\/]*).*/m, '\1').gsub(/,/, '')
-##puts "current jackpot= #{cucurrent['CashValue']= resp.corrent['Jackpot']}\ncash value= #{current['CashValue']}\n"
 
 ##  grab the values cached from the last run.  These are the values
 ##  that were last tweeted.
@@ -73,7 +65,6 @@ cached= YAML::load(File.open('./savedItems.yaml'))
 
 current['Message']= "Amanda says: the next drawing on #{current['DrawDate']} has a projected jackpot of about $#{millions(current['Jackpot'].to_i)} million.  The cash value is around $#{millions(current['CashValue'].to_i)} million."
 changed= (current['Message'] != cached['Message'])
-##puts "current==> #{current.inspect}"
 
 if (changed || OPTIONS[:force])
   require 'twitter'
