@@ -52,10 +52,12 @@ unless  (Integer(current['Jackpot']) rescue false)
   exit
 end
 
-current['CashValue']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLPEstCashValue"[^0-9]*([0-9,]*).*/m, '\1').gsub(/,/, '')
+current['CashValue']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLPEstCashValue"[^>]*>([^<]*)<.*/m, '\1').gsub(/,/, '')
 unless  (Integer(current['CashValue']) rescue false)
-  puts "#{logtime()} non integer value for CashValue: #{current['CashValue']}"
-  exit
+  if (current['CashValue'] !~ /available/i)
+      puts "#{logtime()} non integer value for CashValue: #{current['CashValue']}"
+      exit
+  end
 end
 current['DrawDate']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLCJPTDate"[^0-9]*([0-9\/]*).*/m, '\1').gsub(/,/, '')
 
@@ -63,7 +65,12 @@ current['DrawDate']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLCJPTDat
 ##  that were last tweeted.
 cached= YAML::load(File.open('./savedItems.yaml'))
 
-current['Message']= "Amanda says: the next drawing on #{current['DrawDate']} has a projected jackpot of about $#{millions(current['Jackpot'].to_i)} million.  The cash value is around $#{millions(current['CashValue'].to_i)} million."
+cv= current['CashValue'].downcase;
+if (current['CashValue'] !~ /available/i)
+  cv= "around $#{millions(current['CashValue'].to_i)} million"
+end
+
+current['Message']= "Amanda says: the next drawing on #{current['DrawDate']} has a projected jackpot of about $#{millions(current['Jackpot'].to_i)} million.  The cash value is #{cv}."
 changed= (current['Message'] != cached['Message'])
 
 if (changed || OPTIONS[:force])
