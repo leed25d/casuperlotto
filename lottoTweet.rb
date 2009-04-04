@@ -52,7 +52,7 @@ unless  (Integer(current['Jackpot']) rescue false)
   exit
 end
 
-current['CashValue']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLPEstCashValue"[^>]*>([^<]*)<.*/m, '\1').gsub(/,/, '')
+current['CashValue']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLPEstCashValue"[^>]*>\$*([^<]*)<.*/m, '\1').gsub(/,/, '')
 unless  (Integer(current['CashValue']) rescue false)
   if (current['CashValue'] !~ /available/i)
       puts "#{logtime()} non integer value for CashValue: #{current['CashValue']}"
