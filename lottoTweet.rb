@@ -70,7 +70,7 @@ if (current['CashValue'] !~ /available/i)
   cv= "around $#{millions(current['CashValue'].to_i)} million"
 end
 
-current['Message']= "Amanda says: the next drawing on #{current['DrawDate']} has a projected jackpot of about $#{millions(current['Jackpot'].to_i)} million.  The cash value is #{cv}."
+current['Message']= "Amanda says: the California Lottery drawing on #{current['DrawDate']} jackpot is about $#{millions(current['Jackpot'].to_i)} million.  Cash value is #{cv}."
 changed= (current['Message'] != cached['Message'])
 
 if (changed || OPTIONS[:force])
