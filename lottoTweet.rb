@@ -43,7 +43,7 @@ url = "http://californialottery.com/Games/SuperLottoPlus"
 client = HTTPClient.new
 resp = client.get(url)
 
-##  extract current valuse.  this section is subject to the whims of
+##  extract current values.  this section is subject to the whims of
 ##  the calottery site.  Things here can change unpredictably.
 current={}
 current['Jackpot']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblCurJackpot"[^0-9*]*([0-9,]*).*/m, '\1').gsub(/,/, '')
@@ -62,8 +62,9 @@ end
 current['DrawDate']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLCJPTDate"[^0-9]*([0-9\/]*).*/m, '\1').gsub(/,/, '')
 
 ##  grab the values cached from the last run.  These are the values
-##  that were last tweeted.
+##  that were last tweeted.  gra bhe config file, too.
 cached= YAML::load(File.open('./savedItems.yaml'))
+config= YAML::load(File.open('./config.yaml'))
 
 cv= current['CashValue'].downcase;
 if (current['CashValue'] !~ /available/i)
@@ -77,12 +78,13 @@ if (changed || OPTIONS[:force])
   require 'twitter'
 
   ##  Cache the new values.
-  File.open("./savedItems.yaml", 'w') { |f| f.puts current.to_yaml }
+  File.open("./savedItems.yaml", 'w') { |f| f.puts current.to_yaml } if changed
 
   if (OPTIONS[:noupdate])
     puts "#{logtime()} --noupdate option was set.  no post to twitter"
   else
-    client = Twitter::Client.new(:login => 'casuperlotto', :password => 'coltrane')
+
+    client = Twitter::Client.new(:login => config['login'], :password => config['password'])
     status = client.status(:post, current['Message'])
   end
   puts "#{logtime()} TWEET MSG ==>: '#{current['Message']}'"
