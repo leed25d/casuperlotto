@@ -3,6 +3,10 @@ require 'yaml'
 require 'rubygems'
 require 'httpclient'
 require 'optparse'
+
+##  grab the config file
+config= YAML::load(File.open('./config.yaml'))
+
                                                                       
 def millions(num)
   res= num % 1000000
@@ -37,7 +41,7 @@ ARGV.options do |o|
 end
 
 ########################################################################
-
+##
 ##  grab the superlotto page from the lotto site
 url = "http://californialottery.com/Games/SuperLottoPlus"
 client = HTTPClient.new
@@ -62,9 +66,8 @@ end
 current['DrawDate']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblSLCJPTDate"[^0-9]*([0-9\/]*).*/m, '\1').gsub(/,/, '')
 
 ##  grab the values cached from the last run.  These are the values
-##  that were last tweeted.  gra bhe config file, too.
+##  that were last tweeted.
 cached= YAML::load(File.open('./savedItems.yaml'))
-config= YAML::load(File.open('./config.yaml'))
 
 cv= current['CashValue'].downcase;
 if (current['CashValue'] !~ /available/i)
