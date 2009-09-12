@@ -43,7 +43,8 @@ end
 ########################################################################
 ##
 ##  grab the superlotto page from the lotto site
-url = "http://californialottery.com/Games/SuperLottoPlus"
+
+url = "http://www.calottery.com/games/superlottoplus/"
 client = HTTPClient.new
 resp = client.get(url)
 
