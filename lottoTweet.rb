@@ -14,6 +14,7 @@ def millions(num)
 end
 
 def logtime
+  ##  return a date like "11SEP2009.2044h26s"
   upcaseMonth= Time.now.strftime("%b").upcase
   Time.now.strftime("%d#{upcaseMonth}%Y.%H%Mh%Ss")
 end
