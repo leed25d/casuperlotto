@@ -50,7 +50,9 @@ client = HTTPClient.new
 resp = client.get(url)
 
 ##  extract current values.  this section is subject to the whims of
-##  the calottery site.  Things here can change unpredictably.
+##  the calottery site.  Things here can change unpredictably.  If I
+##  have to change this even once, I will probably start using the
+##  WWW::Mechanize gem instead.
 current={}
 current['Jackpot']= resp.content.gsub(/.*id="GameLargeImageBanner1_lblCurJackpot"[^0-9*]*([0-9,]*).*/m, '\1').gsub(/,/, '')
 unless  (Integer(current['Jackpot']) rescue false)
