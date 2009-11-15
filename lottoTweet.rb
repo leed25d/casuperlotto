@@ -8,9 +8,11 @@ require 'optparse'
 config= YAML::load(File.open('./config.yaml'))
 
                                                                       
-def millions(num)
-  res= num % 1000000
-  res == 0 ? (num / 1000000) : num.to_f / 1000000
+class Numeric
+  def millions()
+    res= self % 1000000
+    res == 0 ? (self / 1000000) : self.to_f / 1000000
+  end
 end
 
 def logtime
@@ -75,10 +77,10 @@ cached= YAML::load(File.open('./savedItems.yaml'))
 
 cv= current['CashValue'].downcase;
 if (current['CashValue'] !~ /available/i)
-  cv= "around $#{millions(current['CashValue'].to_i)} million"
+  cv= "around $#{current['CashValue'].to_i.millions} million"
 end
 
-current['Message']= "Amanda says: the California Lottery drawing on #{current['DrawDate']} jackpot is about $#{millions(current['Jackpot'].to_i)} million.  Cash value is #{cv}."
+current['Message']= "Amanda says: the California Lottery drawing on #{current['DrawDate']} jackpot is about $#{current['Jackpot'].to_i.millions} million.  Cash value is #{cv}."
 changed= (current['Message'] != cached['Message'])
 
 if (changed || OPTIONS[:force])
