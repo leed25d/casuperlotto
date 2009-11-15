@@ -1,0 +1,11 @@
+,----
+| lee@stjohn:~/rubyPrograms/lottoTweet$ git push
+| Counting objects: 5, done.
+| Delta compression using up to 2 threads.
+| Compressing objects: 100% (3/3), done.
+| Writing objects: 100% (3/3), 488 bytes, done.
+| Total 3 (delta 1), reused 0 (delta 0)
+| To git@github.com:leed25d/casuperlotto.git
+|    05ee8cb..278260c  master -> master
+`----
+
