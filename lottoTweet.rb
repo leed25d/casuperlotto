@@ -8,10 +8,16 @@ require 'optparse'
 config= YAML::load(File.open('./config.yaml'))
 
                                                                       
+class Float
+  def round_to(x)
+    (self * 10**x).round.to_f / 10**x
+  end
+end
+
 class Numeric
   def millions()
     res= self % 1000000
-    res == 0 ? (self / 1000000) : self.to_f / 1000000
+    res == 0 ? (self / 1000000) : ((1.0 * self) / 1000000).round_to(1);
   end
 end
 
