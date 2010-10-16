@@ -98,9 +98,32 @@ if (changed || OPTIONS[:force])
   if (OPTIONS[:noupdate])
     puts "#{logtime()} --noupdate option was set.  no post to twitter"
   else
+    consumer_token = 'eI7oRmSie5aY9GMtd9w'
+    consumer_secret = 'UF2ckhR9MyqHo6O5F4Yp6A1eiCR3kxwmUy7NBXo'
+    username = 'casuperlotto'
+    password = 'coltrane'
 
-    client = Twitter::Client.new(:login => config['login'], :password => config['password'])
-    status = client.status(:post, current['Message'])
+    consumer = OAuth::Consumer.new(
+                                   consumer_token, consumer_secret,
+                                   {:site => 'http://twitter.com'}
+                                   )
+
+
+
+    request_token = consumer.get_request_token
+    response = Net::HTTP.post_form(URI.parse('http://twitter.com/oauth/authorize'),
+                                   {"session[username_or_email]" =>
+                                     username,
+                                     "session[password]" => password,
+                                     "oauth_token" => request_token.token})
+    
+    
+    response.body =~ /<div id=\"oauth_pin\">\s*(\d+)\s*</ 
+    pin = $1 
+    oauth = Twitter::OAuth.new(consumer_token, consumer_secret) 
+    oauth.authorize_from_request(request_token.token, request_token.secret, pin) 
+    client = Twitter::Base.new(oauth) 
+    client.update(current['Message']) 
   end
   puts "#{logtime()} TWEET MSG ==>: '#{current['Message']}'"
 else
