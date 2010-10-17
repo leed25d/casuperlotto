@@ -114,7 +114,6 @@ if (changed || OPTIONS[:force])
 
       oauth = Twitter::OAuth.new(config['consumer_token'], config['consumer_secret'])
       oauth.authorize_from_request(request_token.token, request_token.secret, pin)
-      client = Twitter::Base.new(oauth)
     rescue Exception => authException
       ##  log auth error
       puts "Authorization exceprion" + authException.message
@@ -122,6 +121,7 @@ if (changed || OPTIONS[:force])
 
     else
       begin
+        client = Twitter::Base.new(oauth)
         client.update(current['Message'])
       rescue Exception => postException
         ##  log message post error
