@@ -7,7 +7,7 @@ require 'optparse'
 ##  grab the config file
 config= YAML::load(File.open('./config.yaml'))
 
-                                                                      
+
 class Float
   def round_to(x)
     (self * 10**x).round.to_f / 10**x
@@ -52,7 +52,6 @@ end
 ########################################################################
 ##
 ##  grab the superlotto page from the lotto site
-
 url = "http://www.calottery.com/games/superlottoplus/"
 client = HTTPClient.new
 resp = client.get(url)
@@ -97,35 +96,43 @@ if (changed || OPTIONS[:force])
 
   if (OPTIONS[:noupdate])
     puts "#{logtime()} --noupdate option was set.  no post to twitter"
+
   else
-    consumer_token = 'eI7oRmSie5aY9GMtd9w'
-    consumer_secret = 'UF2ckhR9MyqHo6O5F4Yp6A1eiCR3kxwmUy7NBXo'
-    username = 'casuperlotto'
-    password = 'coltrane'
+    begin
+      consumer = OAuth::Consumer.new(config['consumer_token'], config['consumer_secret'],
+                                     {:site => 'http://twitter.com'})
 
-    consumer = OAuth::Consumer.new(
-                                   consumer_token, consumer_secret,
-                                   {:site => 'http://twitter.com'}
-                                   )
+      request_token = consumer.get_request_token
+      response = Net::HTTP.post_form(URI.parse('http://twitter.com/oauth/authorize'),
+                                     {"session[username_or_email]" => config['login'],
+                                       "session[password]" => config['password'],
+                                       "oauth_token" => request_token.token})
 
 
+      response.body =~ /<div id=\"oauth_pin\">\s*(\d+)\s*</
+      pin = $1
 
-    request_token = consumer.get_request_token
-    response = Net::HTTP.post_form(URI.parse('http://twitter.com/oauth/authorize'),
-                                   {"session[username_or_email]" =>
-                                     username,
-                                     "session[password]" => password,
-                                     "oauth_token" => request_token.token})
-    
-    
-    response.body =~ /<div id=\"oauth_pin\">\s*(\d+)\s*</ 
-    pin = $1 
-    oauth = Twitter::OAuth.new(consumer_token, consumer_secret) 
-    oauth.authorize_from_request(request_token.token, request_token.secret, pin) 
-    client = Twitter::Base.new(oauth) 
-    client.update(current['Message']) 
+      oauth = Twitter::OAuth.new(config['consumer_token'], config['consumer_secret'])
+      oauth.authorize_from_request(request_token.token, request_token.secret, pin)
+      client = Twitter::Base.new(oauth)
+    rescue Exception => authException
+      ##  log auth error
+      puts "Authorization exceprion" + authException.message
+      puts e.backtrace.inspect
+
+    else
+      begin
+        client.update(current['Message'])
+      rescue Exception => postException
+        ##  log message post error
+        puts "Message post exception" + postException.message
+      else
+        ##  log success
+        puts "#{logtime()} TWEET MSG ==>: '#{current['Message']}'"
+      end
+    end
   end
-  puts "#{logtime()} TWEET MSG ==>: '#{current['Message']}'"
+
 else
   ##  log nothing changed
   puts "#{logtime()} No change, cached values are unmodified"
