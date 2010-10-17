@@ -1,3 +1,6 @@
 --- 
 login: "twitterlogin"
 password: "twitterpassword
+consumer_token: 'twitterOauthConsumerToken'
+consumer_secret: 'twitterOauthConsumerSecret'
+
